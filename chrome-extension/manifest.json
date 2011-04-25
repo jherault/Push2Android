@@ -1,0 +1,17 @@
+{
+    "name": "Push to Android Extension",
+    "version": "1.0",
+    "description": "Provide an easy way to sync Google Apps from Google Chrome to Android Devices",
+    "browser_action": {
+        "default_icon": "images/push2android.png",
+        "popup": "html/popup.html"
+    },
+    "icons": {
+        "128": "images/push2android.png"
+    },
+    "permissions": [
+        "contextMenus", "tabs", "http://*/*", "https://*/*"
+    ],
+    "options_page":"html/options.html"
+
+}

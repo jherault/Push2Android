@@ -1,0 +1,76 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="../css/style.css"/>
+    <script type="text/javascript" src="../scripts/jquery-1.5.2.min.js"></script>
+
+    <script type="text/javascript">
+        // Report issue: https://github.com/jherault/Push2Android/issues/new
+        var Error_github_issue_tracker_todo = "Please copy the error and paste it on Github (https://github.com/jherault/Push2Android/issues/new): ";
+
+        var LOGIN_REQUIRED_STATUS = "LOGIN_REQUIRED";
+
+        var push2androidOnGAE = "https://push2android.appspot.com/";
+
+        var loginMano = "login?consumer=user";
+
+        var loginAuto = "login?consumer=chrome-extension";
+
+        var sendUrl = "send";
+
+        var stateUrl =  encodeURIComponent(chrome.extension.getURL('html/options.html'));
+
+        function loginOk() {
+
+            $("#testlogin").text("logged in");
+        }
+
+        function loginNotOk() {
+
+            chrome.tabs.create({url: push2androidOnGAE + loginMano + "&stateUrl=" + stateUrl });
+        }
+
+        function action() {
+
+            $.ajax({
+                url:push2androidOnGAE + sendUrl + "?stateUrl=" +stateUrl,
+                async:false,
+                success: function(msg) {
+
+                    alert(msg);
+
+                    if (msg.indexOf(LOGIN_REQUIRED_STATUS)) {
+
+                        loginNotOk();
+
+                    } else {
+                        loginOk();
+                    }
+                },
+                error:  function(jqXHR, textStatus, errorThrown) {
+
+                    //user isn't connected to the application on GAE, so we need to allow him to logged in
+                   // loginNotOk();
+
+                    alert(Error_github_issue_tracker_todo+errorThrown);
+                }
+            });
+
+        }
+
+    </script>
+
+
+</head>
+
+<body>
+
+
+<input type="button" onclick="javascript:action();" value="send"/> <br/>
+<a id="help" href="#" onclick="chrome.tabs.create({url: 'html/options.html'})">options</a>
+
+<div id="testlogin"/>
+
+</body>
+
+</html>
