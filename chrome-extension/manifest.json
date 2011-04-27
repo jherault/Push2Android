@@ -3,11 +3,11 @@
     "version": "1.0",
     "description": "Provide an easy way to sync Google Apps from Google Chrome to Android Devices",
     "browser_action": {
-        "default_icon": "images/push2android.png",
+        "default_icon": "images/90x90/push2android(90x90).png",
         "popup": "html/popup.html"
     },
     "icons": {
-        "128": "images/push2android.png"
+        "128": "images/128x128/push2android.png"
     },
     "permissions": [
         "contextMenus", "tabs", "http://*/*", "https://*/*"

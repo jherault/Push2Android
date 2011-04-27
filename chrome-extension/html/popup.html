@@ -1,76 +1,112 @@
+<!--
+   Copyright 2011 Jérémy Hérault
+
+   Licensed under the Apache License, Version 2.0 (the "License");
+   you may not use this file except in compliance with the License.
+   You may obtain a copy of the License at
+
+       http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing, software
+   distributed under the License is distributed on an "AS IS" BASIS,
+   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+   See the License for the specific language governing permissions and
+   limitations under the License.
+-->
 <html>
 
 <head>
     <link rel="stylesheet" href="../css/style.css"/>
     <script type="text/javascript" src="../scripts/jquery-1.5.2.min.js"></script>
+    <script type="text/javascript" src="../scripts/Utils_And_Constants.js"></script>
 
     <script type="text/javascript">
-        // Report issue: https://github.com/jherault/Push2Android/issues/new
-        var Error_github_issue_tracker_todo = "Please copy the error and paste it on Github (https://github.com/jherault/Push2Android/issues/new): ";
 
-        var LOGIN_REQUIRED_STATUS = "LOGIN_REQUIRED";
+        function sent() {
 
-        var push2androidOnGAE = "https://push2android.appspot.com/";
-
-        var loginMano = "login?consumer=user";
-
-        var loginAuto = "login?consumer=chrome-extension";
-
-        var sendUrl = "send";
-
-        var stateUrl =  encodeURIComponent(chrome.extension.getURL('html/options.html'));
-
-        function loginOk() {
-
-            $("#testlogin").text("logged in");
+            $("#message").text("Your Android Device will synchronize its data int the cloud and vice versa");
         }
 
         function loginNotOk() {
 
-            chrome.tabs.create({url: push2androidOnGAE + loginMano + "&stateUrl=" + stateUrl });
+            chrome.tabs.create({url: PUSH2ANDROID_URL + Operation.login + "?caller=" + CALLER + "&back_url=" + BACK_URL });
         }
 
         function action() {
 
-            $.ajax({
-                url:push2androidOnGAE + sendUrl + "?stateUrl=" +stateUrl,
-                async:false,
-                success: function(msg) {
+            var ids = "";
+            var count = 0;
 
-                    alert(msg);
+            $(".app:checked").each(function(index, item) {
 
-                    if (msg.indexOf(LOGIN_REQUIRED_STATUS)) {
+                ids += $(item).attr('id') + ",";
 
-                        loginNotOk();
-
-                    } else {
-                        loginOk();
-                    }
-                },
-                error:  function(jqXHR, textStatus, errorThrown) {
-
-                    //user isn't connected to the application on GAE, so we need to allow him to logged in
-                   // loginNotOk();
-
-                    alert(Error_github_issue_tracker_todo+errorThrown);
-                }
             });
 
+            if (ids == "") {
+
+                //TODO i18n
+                alert("Please chose an app.");
+
+            } else {
+
+                ids = ids.substr(0, ids.length - 1);
+
+                $.ajax({
+                    url: PUSH2ANDROID_URL + Operation.send + "?caller=" + CALLER + "&appsid=" + ids,
+                    async:false,
+                    success: function(msg) {
+
+                        alert(msg);
+
+                        if (msg.indexOf(NOT_LOGGED_STATUS)) {
+
+                            loginNotOk();
+
+                        } else {
+                            sent();
+                        }
+                    },
+                    error:  function(jqXHR, textStatus, errorThrown) {
+
+                        chrome.tabs.create({url: chrome.extension.getURL('html/error.html') + "?error=" + encodeURIComponent(errorThrown)});
+                    }
+                });
+
+            }
+
         }
+
+        $(document).ready(function() {
+
+            $.each(apps, function(index, app) {
+
+                $("#apps2sync").append("<input type=checkbox id='" + app.id + "' class='app'/> " + app.appname + "<br/>");
+            });
+
+
+        });
 
     </script>
 
 
 </head>
 
-<body>
+<body class="bodyPopup">
+<div id="img">
+    <img src="../images/90x90/push2android(90x90).png" alt="Push 2 Android"/>
+</div>
+<div id="action">
+    <div id="apps2sync"></div>
+    <br/>
 
+</div>
 
-<input type="button" onclick="javascript:action();" value="send"/> <br/>
-<a id="help" href="#" onclick="chrome.tabs.create({url: 'html/options.html'})">options</a>
+<div id="button">
+    Synch
+</div>
 
-<div id="testlogin"/>
-
+<div id="message"/>
 </body>
 
 </html>
