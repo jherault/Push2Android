@@ -22,69 +22,71 @@
 
     <script type="text/javascript">
 
+        const BACK_URL = encodeURIComponent(chrome.extension.getURL('html/about.html'));
+
+        const PUSH2ANDROID_CHROME_ID = 0;
+
+        /**
+         * Success callback
+         * @param status response Status from GAE
+         */
+        function success_handler(status) {
+
+            switch (status) {
+
+                case STATUS.LOGGED_IN: break;
+                case STATUS.NOT_LOGGED: break;
+                case STATUS.NO_DEVICE_REGISTERED:break;
+                case STATUS.UNKNOWN_APP:break;
+                default:/*Unknown status*/break;
+            }
+
+        }
+
+        /**
+         * Error handler
+         * @param textStatus
+         * @param errorThrown
+         */
+        function error_handler(textStatus, errorThrown) {
+
+            chrome.tabs.create({url: chrome.extension.getURL('html/error.html') + "?error=" + encodeURIComponent(errorThrown)});
+        }
+
+        /**
+         * Function call when message has been sent
+         */
         function sent() {
 
-            $("#message").text("Your Android Device will synchronize its data int the cloud and vice versa");
+            //TODO i18n
+            $("#mess").text("Your Android Device will receive the notification");
         }
 
+        /**
+         * Problem with authentication
+         */
         function loginNotOk() {
 
-            chrome.tabs.create({url: PUSH2ANDROID_URL + Operation.login + "?caller=" + CALLER + "&back_url=" + BACK_URL });
+            chrome.tabs.create({url: Operation.login(BACK_URL) });
         }
 
+        /**
+         * Method called when Notification button is clicked
+         */
         function action() {
 
-            var ids = "";
-            var count = 0;
+            var notification = $("#notification").val();
 
-            $(".app:checked").each(function(index, item) {
+            if (notification.length != 0) {
 
-                ids += $(item).attr('id') + ",";
-
-            });
-
-            if (ids == "") {
-
-                //TODO i18n
-                alert("Please chose an app.");
-
-            } else {
-
-                ids = ids.substr(0, ids.length - 1);
-
-                $.ajax({
-                    url: PUSH2ANDROID_URL + Operation.send + "?caller=" + CALLER + "&appsid=" + ids,
-                    async:false,
-                    success: function(msg) {
-
-                        alert(msg);
-
-                        if (msg.indexOf(NOT_LOGGED_STATUS)) {
-
-                            loginNotOk();
-
-                        } else {
-                            sent();
-                        }
-                    },
-                    error:  function(jqXHR, textStatus, errorThrown) {
-
-                        chrome.tabs.create({url: chrome.extension.getURL('html/error.html') + "?error=" + encodeURIComponent(errorThrown)});
-                    }
-                });
-
+                Operation.send(PUSH2ANDROID_CHROME_ID, notification, success_handler, error_handler);
             }
 
         }
 
         $(document).ready(function() {
 
-            $.each(apps, function(index, app) {
-
-                $("#apps2sync").append("<input type=checkbox id='" + app.id + "' class='app'/> " + app.appname + "<br/>");
-            });
-
-
+            $("#button").bind("click", action);
         });
 
     </script>
@@ -97,16 +99,13 @@
     <img src="../images/90x90/push2android(90x90).png" alt="Push 2 Android"/>
 </div>
 <div id="action">
-    <div id="apps2sync"></div>
-    <br/>
-
+    <textarea id="notification"></textarea>
 </div>
-
 <div id="button">
-    Synch
+    Notify
 </div>
 
-<div id="message"/>
+<div id="mess"></div>
 </body>
 
 </html>

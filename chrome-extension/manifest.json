@@ -12,6 +12,6 @@
     "permissions": [
         "contextMenus", "tabs", "http://*/*", "https://*/*"
     ],
-    "options_page":"html/options.html"
+    "options_page":"html/about.html"
 
 }

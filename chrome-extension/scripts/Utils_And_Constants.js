@@ -1,10 +1,5 @@
 /**
  *
- * @author Jeremy Herault - jeremy.herault@gmail.com
- *
- */
-/**
- *
  *  Copyright 2011 Jérémy Hérault
  *
  *  Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,14 +16,13 @@
  *
  */
 
-//TODO get the list from appengine
-const GOOGLE_MAIL = {id:1, appname:"Gmail"};
-const GOOGLE_CALENDAR = {id:2, appname:"Agenda"};
+const STATUS = {
 
-var apps = [GOOGLE_MAIL, GOOGLE_CALENDAR];
-
-const NOT_LOGGED_STATUS = "NOT_LOGGED";
-const LOGGED_IN_STATUS = "LOGGED";
+    NOT_LOGGED: "NOT_LOGGED",
+    LOGGED_IN: "LOGGED",
+    UNKNOWN_APP: "UNKNOWN_APP",
+    NO_DEVICE_REGISTERED: "NO_DEVICE_REGISTERED"
+}
 
 const PUSH2ANDROID_URL = "https://push2android.appspot.com/";
 
@@ -36,15 +30,42 @@ const CALLER = "browser-google-chrome";
 
 const ISSUE_TRACKER_URL = "https://github.com/jherault/Push2Android/issues/new";
 
-const ISSUE_TRACKER_MESSAGE = "Please copy the error and paste it on Github (<a href='" + ISSUE_TRACKER_URL + "'>" + ISSUE_TRACKER_URL + "</a>) : ";
-
-const BACK_URL = encodeURIComponent(chrome.extension.getURL('html/options.html'));
+const ISSUE_TRACKER_MESSAGE = "Please copy the error and paste it on Github (<a href='" + ISSUE_TRACKER_URL + "'>" + ISSUE_TRACKER_URL + "</a>)";
 
 
 var Operation = {
 
-    send: "send",
-    login: "login"
+    /**
+     * Function sending the request to the push2android server side, putting the message in the cloud for the device
+     * @param ID The Push2Android client app ID
+     * @param notification message to send to the Android Device (should be shorten than 1000 characters)
+     * @param success_handler callback on success
+     * @param error_handler callback if an error occurs
+     *
+     */
+    send: function(ID, notification, success_handler, error_handler) {
+
+        $.ajax({
+            url: PUSH2ANDROID_URL + "send?caller=" + CALLER + "&ID=" + ID + "&notification=" + notification,
+            async:false,
+            success: function(msg) {
+                success_handler(msg);
+            },
+            error:  function(jqXHR, textStatus, errorThrown) {
+
+                return error_handler(textStatus, errorThrown);
+            }
+        });
+    },
+    /**
+     * Create the url to open in an other tab or window to log in, and go back to your "login success page"
+     * @param back_url - the "login success page"
+     * return the url to open in a new tab or in a new window
+     */
+    login: function(back_url) {
+
+        return PUSH2ANDROID_URL + "login?caller=" + CALLER + "&back_url=" + back_url;
+    }
 };
 
 

@@ -25,7 +25,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.util.logging.Logger;
 
 /**
@@ -37,27 +37,28 @@ public class SendServlet extends HttpServlet {
 
     private static final Logger log = Logger.getLogger(SendServlet.class.getName());
 
-    private String LOGIN_REQUIRED_STATUS = "LOGIN_REQUIRED";
-
-    private String LOGGED_IN_STATUS = "LOGGED_IN";
-
-
     /**
      * @see HttpServlet#doGet(javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+        String ID = request.getParameter("ID");
+        String caller = request.getParameter("caller");
+        String notification = request.getParameter("notification");
+
+        log.info("ID: " + ID);
+        log.info("Caller: " + caller);
+        log.info("Notification :" + notification);
+
         UserService userService = UserServiceFactory.getUserService();
         User user = userService.getCurrentUser();
 
         if (user != null) {
-            response.getWriter().println(LOGGED_IN_STATUS);
+            response.getWriter().println(Status.LOGGED);
         } else {
-            response.getWriter().println(LOGIN_REQUIRED_STATUS);
+            response.getWriter().println(Status.NOT_LOGGED);
         }
 
 
     }
-
-
 }
