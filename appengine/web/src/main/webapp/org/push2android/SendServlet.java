@@ -55,6 +55,13 @@ public class SendServlet extends HttpServlet {
 
         if (user != null) {
             response.getWriter().println(Status.LOGGED);
+
+            // get devices infos for this Google account
+            // persist data
+            // send to C2DM webservice to push the notification available
+
+            //maybe retrieve SENT Status instead of Logged (if sent then also Logged )
+
         } else {
             response.getWriter().println(Status.NOT_LOGGED);
         }
