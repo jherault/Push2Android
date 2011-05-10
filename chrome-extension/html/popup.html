@@ -26,21 +26,38 @@
 
         const PUSH2ANDROID_CHROME_ID = 0;
 
+        function printMessage(text) {
+
+            //TODO i18n
+            $("#mess").text(text);
+        }
+
         /**
          * Success callback
          * @param status response Status from GAE
          */
         function success_handler(status) {
 
-            switch (status) {
+            var state = parseInt(status);
 
-                case STATUS.LOGGED_IN: break;
-                case STATUS.NOT_LOGGED: break;
-                case STATUS.NO_DEVICE_REGISTERED:break;
-                case STATUS.UNKNOWN_APP:break;
-                default:/*Unknown status*/break;
+            alert(state);
+
+            switch (state) {
+                //add a "sent" message
+                case STATUS.SENT: printMessage("Your Android Device will receive the notification"); break;
+
+                //call login servlet and open a new tab with the given url
+                case STATUS.NOT_LOGGED: chrome.tabs.create({url: Operation.login(PUSH2ANDROID_CHROME_ID, BACK_URL) }); break;
+
+                //add a "no device registred for your account" message
+                case STATUS.NO_DEVICE_REGISTERED: printMessage("You have no device registered for your account, please install the apk on your device"); break;
+
+                //the client should have its own id
+                case STATUS.UNKNOWN_APP: printMessage("Your client isn't known by the GAE side please get an ID and try again"); break;
+
+                //never called
+                default:break;
             }
-
         }
 
         /**
@@ -51,23 +68,6 @@
         function error_handler(textStatus, errorThrown) {
 
             chrome.tabs.create({url: chrome.extension.getURL('html/error.html') + "?error=" + encodeURIComponent(errorThrown)});
-        }
-
-        /**
-         * Function call when message has been sent
-         */
-        function sent() {
-
-            //TODO i18n
-            $("#mess").text("Your Android Device will receive the notification");
-        }
-
-        /**
-         * Problem with authentication
-         */
-        function loginNotOk() {
-
-            chrome.tabs.create({url: Operation.login(BACK_URL) });
         }
 
         /**

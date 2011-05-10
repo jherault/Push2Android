@@ -18,13 +18,20 @@
 
 package org.push2android;
 
+
+/**
+ * @author Jeremy Herault
+ * Static class just for status
+ */
 public class Status {
 
-    public static String NOT_LOGGED = "NOT_LOGGED";
+    public static int NOT_LOGGED = 1;
 
-    public static String LOGGED = "LOGGED";
+    public static int SENT = 2;
 
-    public static String UNKNOWN_APP = "UNKNOWN_APP";
+    public static int UNKNOWN_APP = 3;
 
-    public static String NO_DEVICE_REGISTERED = "NO_DEVICE_REGISTERED";
+    public static int NO_DEVICE_REGISTERED = 4;
+
+    public static int ERROR = 5;
 }

@@ -1,5 +1,7 @@
 *.iml
 *.ipr
 *.iws
+*.crx
+*.pem
 out/
 target/

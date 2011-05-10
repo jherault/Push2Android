@@ -1,4 +1,3 @@
-<%--
 /**
  *
  *  Copyright 2011 Jérémy Hérault
@@ -16,9 +15,19 @@
  *  limitations under the License.
  *
  */
---%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<html>
-  <head><title>Simple jsp page</title></head>
-  <body>JSP et Servlet: une belle merde tiens</body>
-</html>
+
+
+package org.push2android.servlets;
+
+import javax.servlet.http.HttpServlet;
+
+/**
+ * @author Jeremy Herault
+ *         Servlet use by the Android Client to unregister the device and the associated user account
+ */
+public class UnregisterServlet extends HttpServlet {
+
+
+
+
+}

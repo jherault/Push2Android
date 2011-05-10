@@ -17,9 +17,8 @@
  */
 
 
-package org.push2android;
+package org.push2android.servlets;
 
-import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 
@@ -28,7 +27,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URLEncoder;
-
 import java.util.logging.Logger;
 
 /**
@@ -45,19 +43,23 @@ public class AuthServlet extends HttpServlet {
      */
     public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        String stateUrl = request.getParameter("stateUrl");
+        String ID = request.getParameter("ID");
+        String caller = request.getParameter("caller");
+        String back_url = request.getParameter("back_url");
+
+        log.info("ID: " + ID);
+        log.info("Caller: " + caller);
+        log.info("Back URL: " + back_url);
 
         if (request.getParameter("completed") != null) {
 
-            response.getWriter().print("<meta http-equiv=\"refresh\" content=\"0;url=" + stateUrl + "\">");
+            response.getWriter().print("<meta http-equiv=\"refresh\" content=\"0;url=" + back_url + "\">");
 
         } else {
 
             UserService userService = UserServiceFactory.getUserService();
-            User user = userService.getCurrentUser();
 
-            response.sendRedirect(userService.createLoginURL("https://push2android.appspot.com/login?completed=true&stateUrl=" + URLEncoder.encode(stateUrl, "UTF-8")));
-
+            response.sendRedirect(userService.createLoginURL("https://push2android.appspot.com/login?completed=true&stateUrl=" + URLEncoder.encode(back_url, "UTF-8")));
         }
     }
 } 

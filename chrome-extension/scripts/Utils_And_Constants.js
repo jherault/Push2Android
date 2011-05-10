@@ -18,10 +18,10 @@
 
 const STATUS = {
 
-    NOT_LOGGED: "NOT_LOGGED",
-    LOGGED_IN: "LOGGED",
-    UNKNOWN_APP: "UNKNOWN_APP",
-    NO_DEVICE_REGISTERED: "NO_DEVICE_REGISTERED"
+    NOT_LOGGED: 1,
+    SENT: 2,
+    UNKNOWN_APP: 3,
+    NO_DEVICE_REGISTERED: 4
 }
 
 const PUSH2ANDROID_URL = "https://push2android.appspot.com/";
@@ -59,12 +59,17 @@ var Operation = {
     },
     /**
      * Create the url to open in an other tab or window to log in, and go back to your "login success page"
+     * @param ID The Push2Android client app ID
      * @param back_url - the "login success page"
      * return the url to open in a new tab or in a new window
      */
-    login: function(back_url) {
+    login: function(ID, back_url) {
 
-        return PUSH2ANDROID_URL + "login?caller=" + CALLER + "&back_url=" + back_url;
+        var backurl = PUSH2ANDROID_URL + "login?caller=" + CALLER + "&ID=" + ID + "&back_url=" + back_url;
+
+        alert(backurl);
+
+        return backurl;
     }
 };
 
