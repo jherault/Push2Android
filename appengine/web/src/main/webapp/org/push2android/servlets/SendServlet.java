@@ -61,11 +61,6 @@ public class SendServlet extends HttpServlet {
 
         if (user != null) {
 
-            // TODO
-            // get devices infos for this Google account
-            // persist data
-            // send to C2DM webservice to push the notification available
-
             C2DMessaging push = C2DMessaging.get(getServletContext());
 
             PersistenceManager pm = C2DMessaging.getPMF(getServletContext()).getPersistenceManager();

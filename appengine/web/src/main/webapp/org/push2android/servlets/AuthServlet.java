@@ -19,8 +19,12 @@
 
 package org.push2android.servlets;
 
+import com.google.appengine.api.oauth.OAuthService;
+import com.google.appengine.api.oauth.OAuthServiceFactory;
+import com.google.appengine.api.users.User;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import org.push2android.Status;
 
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -31,8 +35,8 @@ import java.util.logging.Logger;
 
 /**
  * @author Jeremy Herault
- *
- * Servlet used to authenticate the user with its Google Account from the Chrome extension
+ *         <p/>
+ *         Servlet used to authenticate the user with its Google Account from the Chrome extension
  */
 public class AuthServlet extends HttpServlet {
 
@@ -61,5 +65,40 @@ public class AuthServlet extends HttpServlet {
 
             response.sendRedirect(userService.createLoginURL("https://push2android.appspot.com/login?completed=true&stateUrl=" + URLEncoder.encode(back_url, "UTF-8")));
         }
+    }
+
+    /**
+     * copied from Chrome To Phone sources: http://code.google.com/p/chrometophone/source/browse/tags/2.2.0/appengine/src/com/google/android/chrometophone/server/RegisterServlet.java
+     * Get the user using the UserService.
+     * <p/>
+     * If not logged in, return an error message.
+     *
+     * @return user, or null if not logged in.
+     * @throws IOException
+     */
+    public static User checkUser(HttpServletRequest req, HttpServletResponse resp,
+                                 boolean errorIfNotLoggedIn) throws IOException {
+        // Is it OAuth ?
+        User user = null;
+        OAuthService oauthService = OAuthServiceFactory.getOAuthService();
+        try {
+            user = oauthService.getCurrentUser();
+            if (user != null) {
+                log.info("Found OAuth user " + user);
+                return user;
+            }
+        } catch (Throwable t) {
+            user = null;
+        }
+
+        UserService userService = UserServiceFactory.getUserService();
+        user = userService.getCurrentUser();
+        if (user == null && errorIfNotLoggedIn) {
+            // TODO: redirect to OAuth/user service login, or send the URL
+            // TODO: 401 instead of 400
+            resp.setStatus(400);
+            resp.getWriter().println(Status.NOT_LOGGED);
+        }
+        return user;
     }
 } 

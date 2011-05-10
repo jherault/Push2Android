@@ -34,4 +34,6 @@ public class Status {
     public static int NO_DEVICE_REGISTERED = 4;
 
     public static int ERROR = 5;
+
+    public static int OK = 6;
 }

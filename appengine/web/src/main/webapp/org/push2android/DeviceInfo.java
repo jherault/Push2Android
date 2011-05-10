@@ -77,7 +77,7 @@ public class DeviceInfo {
         return deviceRegistrationID;
     }
 
-    public void setDeviceID(String deviceRegistrationID) {
+    public void setDeviceRegistrationID(String deviceRegistrationID) {
         this.deviceRegistrationID = deviceRegistrationID;
     }
 
