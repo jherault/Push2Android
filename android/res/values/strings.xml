@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Push2AndroidActivity</string>
+    <string name="app_name">Push2Android</string>
+    <string name="connecting_text">"Connexion en cours ..."</string>
+    <string name="select_account">"Selectionner le compte a associé à Push2Android"</string>
+    <string name="no_accounts">"Aucun compte trouvé"</string>
+    <string name="next">"Suivant"</string>
 </resources>
